@@ -1,0 +1,58 @@
+"""Use the Flight Search and Sheety API to populate your own copy of the Google Sheet with
+International Air Transport Association (IATA) codes for each city. Most of the cities in the sheet include
+multiple airports, you want the city code (not the airport code see here)."""
+
+"""Use the Flight Search API to check for the cheapest flights from tomorrow to 6 months later for all
+the cities in the Google Sheet."""
+1) Make function in FlightSearch Class, called check_flights
+= to Searches for flight options between two cities on specified departure and return dates using the Amadeus API
+    a) If there's no DIRECT flight, we need to search the informations for INDIRECT flight
+       stops: 0 for direct flights. 1 or more for indirect flights.
+        query = {
+            "originLocationCode": origin_city_code,
+            "destinationLocationCode": destination_city_code,
+            "departureDate": from_time.strftime("%Y-%m-%d"),
+            "returnDate": to_time.strftime("%Y-%m-%d"),
+            "adults": 1,
+            "nonStop": "true" if is_direct else "false",
+            "currencyCode": "USD",
+            "max": "10",
+        }
+    b) Make an exception/ raise an error if we get status_code other than 200
+
+2) Make functions in FlightData Class, called find_cheapest_flight with parameters = flights_data (dict):
+The JSON data containing flight information returned by the API.
+= to Parses flight data received from the Amadeus API to identify the cheapest flight option among multiple entries,
+in this case 10 entries.
+    a) Make a bunch of attributes in init function
+        self.price = price
+        self.origin_airport = origin_airport
+        self.destination_airport = destination_airport
+        self.out_date = out_date
+        self.return_date = return_date
+        self.stops = stops
+    b) We need go GET HOLD a bunch of insights for every flights from THE JSON dict that we got, specifically the PRICE of the flight
+       cheapest_flight = FlightData(lowest_price, origin, destination, out_date, return_date, nr_stops)
+    c) Get the lowest price using for loop
+       for flight in flights_data["data"]:
+            price = float(flight["price"]["grandTotal"])
+            if price < lowest_price:
+                lowest_price = price
+    d) Handle empty data if no flight or Amadeus rate limit exceeded
+       if flights_data is None or not flights_data['data']:
+            print("No flight data")
+            return FlightData("N/A", "N/A", "N/A", "N/A", "N/A", "N/A")
+
+
+"""If the price is lower than the lowest price listed in the Google Sheet then send an SMS (or WhatsApp Message)
+to your own number using the Twilio API."""
+
+"""The SMS should include the departure airport IATA code, destination airport IATA code,
+flight price and flight dates. e.g."""
+
+
+
+
+listttt = "akuTseorangTRM"
+the_list = listttt.split("T")[2]
+print(the_list)
